@@ -1,0 +1,28 @@
+#!/bin/sh
+./configure \
+-v \
+-prefix /opt/qt5.7.0 \
+-release \
+-opensource \
+-make libs \
+-xplatform linux-arm-gnueabi-g++ \
+-optimized-qmake \
+-pch \
+-qt-sql-sqlite \
+-qt-libjpeg \
+-qt-zlib \
+-no-opengl \
+-skip qt3d \
+-skip qtcanvas3d \
+-skip qtpurchasing \
+-no-sse2 \
+-no-openssl \
+-no-nis \
+-no-cups \
+-no-glib \
+-no-iconv \
+-nomake examples \
+-nomake tools \
+-skip qtvirtualkeyboard \
+-I/opt/tslib1.4/include \
+-L/opt/tslib1.4/lib
