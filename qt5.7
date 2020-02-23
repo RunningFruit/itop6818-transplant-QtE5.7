@@ -1,0 +1,53 @@
+#!/bin/sh
+
+export TSLIB_ROOT=/opt/tslib1.4
+export QT_ROOT=/opt/qt-5.7.0
+export TSLIB_TSDEVICE=/dev/input/event2
+export TSLIB_TSEVENTTYPE=input
+export TSLIB_CONFFILE=/opt/tslib1.4/etc/ts.conf
+export TSLIB_PLUGINDIR=/opt/tslib1.4/lib/ts
+export TSLIB_CONSOLEDEVICE=none
+export TSLIB_FBDEVICE=/dev/fb0
+export QWS_MOUSE_PROTO=tslib:/dev/input/event2
+export LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib:$QT_ROOT/lib:$TSLIB_ROOT/lib:$TSLIB_ROOT/lib/
+export QT_QPA_PLATFORM_PLUGIN_PATH=$QT_ROOT/plugins
+export QT_QPA_PLATFORM=linuxfb:tty=/dev/fb0
+export QT_QPA_FONTDIR=$QT_ROOT/lib/fonts
+export QT_QPA_GENERIC_PLUGINS=tslib
+
+export PATH=/bin:/sbin:/usr/bin/:/usr/sbin:/root/tslib/build/bin
+
+if [ -c /dev/input/event2 ]; then
+	export QWS_MOUSE_PROTO='MouseMan:/dev/input/mice Tslib:/dev/input/event2'
+	if [ -e /etc/pointercal ] ; then
+		fsize=$(/bin/ls -al /etc/pointercal | cut -d' ' -f 23)
+		echo $fsize
+		if [ $fsize -ge "1" ]; then
+			echo "/etc/pointercal is exit"
+		else
+			echo "/etc/pointercal is empty"
+		fi
+	else
+		/opt/tslib1.4/bin/ts_calibrate
+        fi
+else
+        export QWS_MOUSE_PROTO="MouseMan:/dev/input/mice"
+        #>/etc/pointercal
+fi
+
+FB_SIZE=$(cat /sys/class/graphics/fb0/virtual_size)
+
+case "$FB_SIZE" in
+800,480)
+export QWS_DISPLAY="LinuxFb:mmWidth91:mmHeight53:1"
+;;
+480,272)
+export QWS_DISPLAY="LinuxFb:mmWidth76:mmHeight44:1"
+;;
+*)
+export QWS_DISPLAY="LinuxFb:mmWidth91:mmHeight53:1"
+;;
+esac
+export QWS_DISPLAY=Transformed:Rot0
+export HOME=/root
+
